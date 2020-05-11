@@ -19,17 +19,17 @@ Kestrel must configure an HTTP/2 endpoint without TLS in `Program.cs`:
 
 ```cs
 public static IHostBuilder CreateHostBuilder(string[] args) =>
-    	Host.CreateDefaultBuilder(args)
-    		.ConfigureWebHostDefaults(webBuilder =>
+    Host.CreateDefaultBuilder(args)
+    	.ConfigureWebHostDefaults(webBuilder =>
+    	{
+    	webBuilder.ConfigureKestrel(options =>
     		{
-    			webBuilder.ConfigureKestrel(options =>
-    			{
-    				// Setup a HTTP/2 endpoint without TLS.
-    				options.ListenLocalhost(5001, o => o.Protocols = HttpProtocols.Http2);
-    			});
-    
-    			webBuilder.UseStartup<Startup>();
+    		// Setup a HTTP/2 endpoint without TLS.
+    		options.ListenLocalhost(5001, o => o.Protocols = HttpProtocols.Http2);
     		});
+    
+    	webBuilder.UseStartup<Startup>();
+ });
 ```
 then run `dotnet run` again.
 
@@ -159,12 +159,12 @@ In 'Startup.cs' add the gRPC service to the routing pipeline through the 'MapGrp
 ```cs
 app.UseEndpoints(endpoints =>
 {
-		endpoints.MapGrpcService<ProductServiceImpl>();
+	endpoints.MapGrpcService<ProductServiceImpl>();
 		
-		endpoints.MapGet("/", async context =>
-		{
-				await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
-		});
+	endpoints.MapGet("/", async context =>
+	{
+	await context.Response.WriteAsync("Communication with gRPC endpoints must be made through a gRPC client. To learn how to create a client, visit: https://go.microsoft.com/fwlink/?linkid=2086909");
+	});
 }); 
 ```
 
